@@ -4,8 +4,6 @@ import akka.actor.ActorRef;
 import java.util.ArrayList;
 import java.util.Random;
 
-import java.lang.System;
-
 /**
  * Sends passnegers on to a security queue or denies them passage
  * @author Ian Salitrynski
@@ -28,11 +26,14 @@ public class DocumentCheck extends UntypedActor{
 	 */
 	private Random r = new Random();
 	
+	public DocumentCheck(ArrayList<ActorRef> secQueues) {
+		queues = secQueues;
+	}
+	
 	@Override
 	public void onReceive(Object m) throws Exception {
 		
 		if (m instanceof MessageStartDay) {
-			// TODO: Initialize queues array list
 			
 			for (int i = 0; i < queues.size(); i++) {
 				queues.get(i).tell(m);	// Send start day message

@@ -3,11 +3,19 @@ import akka.actor.UntypedActor;
 
 public class BodyScan extends UntypedActor{
 
+	private final ActorRef security;
+	private final ActorRef securityQueue;	
+	private final int ID;
+	
+	public BodyScan(ActorRef sec, ActorRef secQueue, int id) {
+		security = sec;
+		securityQueue = secQueue;
+		ID = id;
+	}
+	
 	@Override
 	public void onReceive(Object arg0) throws Exception {
-		private final ActorRef Security;
-		private final ActorRef SecurityQueue;	
-		private final int ID;
+
 		// TODO Auto-generated method stub
 		
 	}

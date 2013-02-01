@@ -4,8 +4,6 @@ import java.util.Queue;
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 
-import java.lang.System;
-
 /**
  * Sends passengers to the Body Scan and to the Bag Scan
  * Waits for the Bag Scan to be ready before sendign passengers
@@ -16,15 +14,21 @@ public class SecurityQueue extends UntypedActor{
 	private final ActorRef bodyScan;
 	private final ActorRef bagScan;	
 	private final int ID;
+	
 	private Queue<Passenger> passengers = new LinkedList<Passenger>();
 	private boolean scanReady = false;
 	private boolean endDay = false;
+	
+	public SecurityQueue (ActorRef bodySc, ActorRef bagSc, int id) {
+		bodyScan = bodySc;
+		bagScan = bagSc;
+		ID = id;
+	}
 	
 	@Override
 	public void onReceive(Object m) throws Exception {
 		
 		if(m instanceof MessageStartDay) {
-			//TODO: Initialize ID, bodyScan, bagScan, ID
 			
 			System.out.println("Security Queue " + ID + " received start day message.");
 			
