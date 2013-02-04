@@ -39,9 +39,8 @@ public class Driver extends UntypedActor{
 	@Override
 	public void onReceive(Object m) throws Exception {
 		if ( m instanceof MessageEndDay ) { // System finished
+			System.out.println("System Driver received end-of-day message.");
 			context().system().shutdown(); // I think?
-		} else {
-			// do nothing, not supposed to receive other msg
 		}
 	}
 
@@ -65,7 +64,11 @@ public class Driver extends UntypedActor{
 		for(int i = 0 ; i < CYCLES; i++) {
 			final MessageSendPassenger passM = new MessageSendPassenger(new Passenger());
 			DocCheck.tell(passM);
+			System.out.println("System Driver sending passenger " +
+				(passM).getPassenger().getID() + " to Document Check.");
 		}
+		
 		DocCheck.tell(END);
+		System.out.println("System Driver sending end-of-day to Document Check.");
 	}
 }
