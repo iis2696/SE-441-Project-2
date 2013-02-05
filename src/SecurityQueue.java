@@ -33,7 +33,7 @@ public class SecurityQueue extends UntypedActor{
 			System.out.println("Security Queue " + ID + " received start day message.");
 			
 			// Send start day to body and bag scan
-			bodyScan.tell(m);
+			bodyScan.tell(new MessageStartDayRespond(this.getContext()));
 			bagScan.tell(m);
 			
 			System.out.println("Security Queue " + ID + " sending start day message to body scan and bag scan " + ID + ".");
@@ -47,6 +47,16 @@ public class SecurityQueue extends UntypedActor{
 			endDay = true;
 			
 			System.out.println("Security Queue " + ID + " sending end day message to bag scan " + ID + ".");
+			
+			// Queue is empty, end of day, so start shutting down
+			if (passengers.isEmpty() && scanReady) {
+				
+				MessageEndDay msg = new MessageEndDay();
+				bodyScan.tell(msg);
+				System.out.println("Security Queue " + ID + " sending end day message to body scan " + ID + ".");
+				
+				context().stop();
+			}
 			
 		} else if (m instanceof MessageSendPassenger) {
 			
@@ -96,7 +106,7 @@ public class SecurityQueue extends UntypedActor{
 	 */
 	private void sendPassengerToBodyScan() {
 		Passenger p = passengers.poll();
-		MessageSendPassenger msg = new MessageSendPassenger(p);
+		MessageSendPassengerRespond msg = new MessageSendPassengerRespond(p, this.getContext());
 		bodyScan.tell(msg);
 		scanReady = false;
 	}

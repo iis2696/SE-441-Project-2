@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 /**
@@ -54,7 +55,8 @@ public class Jail extends UntypedActor{
 							+ " was sent to detention center.");
 				}
 				System.out.println("The Jail is shutting down.");
-				context().stop();
+
+				Actors.registry().shutdownAll();
 			}
 		}
 	}

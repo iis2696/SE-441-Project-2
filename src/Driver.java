@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import akka.actor.*;
 
 /**
@@ -9,48 +11,37 @@ import akka.actor.*;
  * 
  * @author Jacob Siegel
  */
-public class Driver extends UntypedActor{
-	private final ActorRef DocCheck;
-	private final int CYCLES;
-	private final MessageStartDay START;
-	private final MessageEndDay END;
+public class Driver {
+	private final static int NUMSTATIONS = 6;
+	private static ActorRef DocCheck;
+	private final static int CYCLES = 20;
 	
-	public Driver(ActorRef dc, int n) {
-		DocCheck = dc;
-		CYCLES = n;
-		
-		START = new MessageStartDay();
-		END = new MessageEndDay();
-		
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		final ActorRef jail = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new Jail(NUMSTATIONS); }}).start();
+		final ArrayList<ActorRef> secQueues = new ArrayList<ActorRef>();
+		for (int i = 0; i < NUMSTATIONS; i++) {
+			final int n = i;
+			final ActorRef sec = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new Security(n, jail); }}).start();
+			final ActorRef bodyScan = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new BodyScan(sec, n); }}).start();
+			final ActorRef bagScan = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new BagScan(sec, n); }}).start();
+			final ActorRef secQueue = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new SecurityQueue(bodyScan, bagScan, n); }}).start();
+			secQueues.add(secQueue);
+		}
+		DocCheck = Actors.actorOf(new UntypedActorFactory() {public UntypedActor create() { return new DocumentCheck(secQueues); }}).start();
 		startDay();
 		cyclePassengers();
-	}
-	
-	/*
-	 * Outbound MSG
-	 * - Start Day
-	 * - Passenger Arrival (SendPassenger)
-	 * - End Day (after N cycles)
-	 * 
-	 * Inbound MSG
-	 * - End Day
-	 */
-	
-	@Override
-	public void onReceive(Object m) throws Exception {
-		if ( m instanceof MessageEndDay ) { // System finished
-			System.out.println("System Driver received end-of-day message.");
-			context().system().shutdown(); // I think?
-		}
 	}
 
 	/**
 	 * Simply tells the DocumentCheck actor that the day has
 	 * begun.
 	 */
-	private void startDay() {
-		DocCheck.tell(START);
-		System.out.println("message about sending start to doc check");
+	private static void startDay() {
+		DocCheck.tell(new MessageStartDay());
+		System.out.println("Driver sending start day message to doc check");
 	}
 	
 	/**
@@ -60,7 +51,7 @@ public class Driver extends UntypedActor{
 	 * 
 	 * When loop is completed, sends end-of-day message.
 	 */
-	private void cyclePassengers() {
+	private static void cyclePassengers() {
 		for(int i = 0 ; i < CYCLES; i++) {
 			final MessageSendPassenger passM = new MessageSendPassenger(new Passenger());
 			DocCheck.tell(passM);
@@ -68,7 +59,7 @@ public class Driver extends UntypedActor{
 				(passM).getPassenger().getID() + " to Document Check.");
 		}
 		
-		DocCheck.tell(END);
+		DocCheck.tell(new MessageEndDay());
 		System.out.println("System Driver sending end-of-day to Document Check.");
 	}
 }

@@ -25,6 +25,8 @@ public class BagScan extends UntypedActor{
 			System.out.println("BagScan " + ID + " sending end day message to Security.");
 			
 			security.tell(m);
+			context().stop();
+			
 		} else if(m instanceof MessageSendPassenger){
 			System.out.println("BagScan " + ID + " receives passenger " + ((MessageSendPassenger) m).getPassenger().getID());
 			if(r.nextInt(failMax)>=failPercentage){
