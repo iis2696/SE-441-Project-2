@@ -29,6 +29,7 @@ public class Jail extends UntypedActor{
 	 */
 	public Jail(int numberOfSecurityStations) {
 		this.numberOfSecurityStations = numberOfSecurityStations;
+		jailedPassengers = new ArrayList<Passenger>();
 	}
 	
 	/*
@@ -40,7 +41,7 @@ public class Jail extends UntypedActor{
 		if(m instanceof MessageSendPassenger) {
 			MessageSendPassenger mp = (MessageSendPassenger) m;
 			
-			System.out.println("Passenger " + mp.getPassenger()
+			System.out.println("Passenger " + mp.getPassenger().getID()
 					+ " has arrived at the Jail.");
 			
 			jailedPassengers.add(mp.getPassenger());

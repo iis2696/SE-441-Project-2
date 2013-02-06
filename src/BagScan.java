@@ -30,14 +30,14 @@ public class BagScan extends UntypedActor{
 		} else if(m instanceof MessageSendPassenger){
 			System.out.println("BagScan " + ID + " receives passenger " + ((MessageSendPassenger) m).getPassenger().getID());
 			if(r.nextInt(failMax)>=failPercentage){
-				System.out.println("BagScan " + ID + "fails the inspection of " + ((MessageSendPassenger) m).getPassenger());
+				System.out.println("BagScan " + ID + " fails the inspection of " + ((MessageSendPassenger) m).getPassenger().getID());
 				MessageScannedPassenger msp = new MessageScannedPassenger(((MessageSendPassenger) m).getPassenger(), false);
-				System.out.println("BodyScan " + ID + "sending " + ((MessageSendPassenger) m).getPassenger() + " to Security");
+				System.out.println("BodyScan " + ID + " sending " + ((MessageSendPassenger) m).getPassenger().getID() + " to Security");
 				security.tell(msp);
 			}else{
-				System.out.println("BagScan " + ID + "passes the inspection of " + ((MessageSendPassenger) m).getPassenger());
+				System.out.println("BagScan " + ID + " passes the inspection of " + ((MessageSendPassenger) m).getPassenger().getID());
 				MessageScannedPassenger msp = new MessageScannedPassenger(((MessageSendPassenger) m).getPassenger(), true);
-				System.out.println("BodyScan " + ID + "sending " + ((MessageSendPassenger) m).getPassenger() + " to Security");
+				System.out.println("BodyScan " + ID + " sending " + ((MessageSendPassenger) m).getPassenger().getID() + " to Security");
 				security.tell(msp);
 			}
 		}

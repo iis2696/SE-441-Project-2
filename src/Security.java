@@ -56,7 +56,7 @@ public class Security extends UntypedActor{
 					+ " receives scan complete message with passenger "
 					+ msp.getPassenger().getID() + ".");
 			
-			Boolean result = scanResults.get(msp.getClass());
+			Boolean result = scanResults.get(msp.getPassenger());
 			//Need to check if we have already received
 			//the passenger's results from the other scan.
 			if(result == null) {
@@ -76,11 +76,12 @@ public class Security extends UntypedActor{
 			}
 		} else if(m instanceof MessageEndDay) {
 			System.out.println("Security Station " + ID 
-					+ " receives end of day message.");
+					+ " receives end of day message " + (scannerOffCount + 1) + ".");
 			scannerOffCount++;
 			if(scannerOffCount == 2) {
 				System.out.println("Security Station " + ID +
 						" is shutting down.");
+				jail.tell(m);
 				context().stop();
 			}
 		}

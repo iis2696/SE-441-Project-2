@@ -12,9 +12,9 @@ import akka.actor.*;
  * @author Jacob Siegel
  */
 public class Driver {
-	private final static int NUMSTATIONS = 6;
+	private final static int NUMSTATIONS = 4;
 	private static ActorRef DocCheck;
-	private final static int CYCLES = 20;
+	private final static int CYCLES = 100;
 	
 	/**
 	 * @param args

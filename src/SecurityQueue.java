@@ -64,7 +64,7 @@ public class SecurityQueue extends UntypedActor{
 			
 			// Send passenger on to bag scan
 			bagScan.tell(m);
-			System.out.println("Security Queue " + ID + " sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + "to bag scan " + ID + ".");
+			System.out.println("Security Queue " + ID + " sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + " to bag scan " + ID + ".");
 			
 			// Queue the passenger for body scan
 			passengers.add(((MessageSendPassenger) m).getPassenger());
@@ -72,7 +72,7 @@ public class SecurityQueue extends UntypedActor{
 				
 				// If ready, send them on
 				sendPassengerToBodyScan();
-				System.out.println("Security Queue " + ID + " sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + "to body scan " + ID + ".");
+				System.out.println("Security Queue " + ID + " sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + " to body scan " + ID + ".");
 			}
 			
 		} else if (m instanceof MessageReady) {
@@ -80,8 +80,8 @@ public class SecurityQueue extends UntypedActor{
 			
 			// Send next passenger if there is one
 			if (!passengers.isEmpty()) {
+				System.out.println("Security Queue " + ID + " sending passenger " + passengers.peek().getID() + " to body scan " + ID + ".");
 				sendPassengerToBodyScan();
-				System.out.println("Security Queue " + ID + " sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + "to body scan " + ID + ".");
 			} else {
 				scanReady = true;
 			}

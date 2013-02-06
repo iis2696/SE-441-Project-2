@@ -55,12 +55,12 @@ public class DocumentCheck extends UntypedActor{
 				// Passenger can go on, so send them to next queue
 				MessageSendPassenger msg = new MessageSendPassenger(((MessageSendPassenger) m).getPassenger());
 				queues.get(cur).tell(msg);
-				System.out.println("Document Check sending passenger" + ((MessageSendPassenger) m).getPassenger().getID() + " to Security Queue " + cur + ".");
+				System.out.println("Document Check sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + " to Security Queue " + cur + ".");
 				cur = ((cur + 1)  % queues.size());
 				
 			} else {
 				// Passenger denied passage 
-				System.out.println("Document Check sending passenger" + ((MessageSendPassenger) m).getPassenger().getID() + " away.");
+				System.out.println("Document Check sending passenger " + ((MessageSendPassenger) m).getPassenger().getID() + " away.");
 			}
 		}
 		
